@@ -1,28 +1,24 @@
 <?php
-session_start();
-
-if (isset($_SESSION['id']) && isset($_SESSION['name'])) {
-  $name = $_SESSION['name'];
-  $id = $_SESSION['id'];
-} else {
-  header('Location: login.php');
-  exit();
-}
-
-var_dump($_SESSION);
+require_once(__DIR__ . "/shared/head.php");
 ?>
-<!DOCTYPE html>
-<html lang="ja">
-
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ローカル開発環境</title>
+  <link rel="stylesheet" href="./css/index.css">
 </head>
 
 <body>
-  <?php echo "トップページ" ?>
-  <div style="text-align: right"><a href="logout.php">ログアウト</a></div>
+  <?php require_once("./shared/header.php"); ?>
+  <div class="menu">
+    <button>
+      <a href="list.php">
+        記事の作成
+      </a>
+    </button>
+    <button>
+      <a href="media.php">
+        画像の管理
+      </a>
+    </button>
+  </div>
+
 </body>
 
 </html>
