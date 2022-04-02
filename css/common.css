@@ -1,9 +1,18 @@
-.header {
+a {
+  text-decoration: none;
+}
+/* .header {
   display: flex;
   justify-content: space-between;
   align-items: baseline;
 }
 
-.header > h2 + button {
-  height: 30px;
+.header > h2 > a {
+  text-decoration: none;
+  color: black;
 }
+
+.header > h2 + button > a {
+  text-decoration: none;
+  color: white;
+} */
