@@ -5,5 +5,5 @@ unset($_SESSION['id']);
 unset($_SESSION['name']);
 unset($_SESSION['error']);
 
-header('Location: login.php'); 
+header('Location: ./login.php'); 
 exit();

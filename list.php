@@ -1,10 +1,22 @@
 <?php
-require_once(__DIR__ . "/shared/head.php");
+session_start();
 require_once(__DIR__ . '/lib/library.php');
 
-$db = dbconnect();
+// login check
+if (isset($_SESSION['id']) && isset($_SESSION['name'])) {
+  $name = $_SESSION['name'];
+  $id = $_SESSION['id'];
+} else {
+  header('Location: ./auth/login.php');
+  exit();
+}
 
+$db = dbconnect();
+// 一覧を取得
 ?>
+
+<!-- html -->
+<?php require_once(__DIR__ . "/shared/head.php"); ?>
 <link rel="stylesheet" href="./css/list.css">
 </head>
 

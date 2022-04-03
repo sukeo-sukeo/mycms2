@@ -1,6 +1,6 @@
 <?php
 session_start();
-require_once('./lib/library.php');
+require_once(__DIR__ . '/../lib/library.php');
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   var_dump($_REQUEST);
@@ -25,7 +25,4 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   //   die($db->error);
   // }
 
-} else {
-  header('Location: login.php');
-  exit();
 }

@@ -7,11 +7,11 @@ function h($value)
 
 function dbconnect() {
   // local
-  require('./config/database/info_dev.php');
+  require(__DIR__ . '/../config/database/info_dev.php');
   // vartualbox
-  // require('./config/database/info_test.php');
+  // require(__DIR__ . '/../config/database/info_test.php');
   // 本番
-  // require('./config/database/info_pro.php');
+  // require(__DIR__ . '/../config/database/info_pro.php');
   $dbinfo = get_dbinfo();
 
   
@@ -24,8 +24,8 @@ function dbconnect() {
   return $db;
 }
 
-function db_insert_one($table, $item, $db) {
-  $stmt = $db->prepare("insert into $table (name) values(?)");
+function db_insert_one($table_name, $item, $db) {
+  $stmt = $db->prepare("insert into $table_name (name) values(?)");
   if (!$stmt) {
     die($db->error);
   }
@@ -34,14 +34,11 @@ function db_insert_one($table, $item, $db) {
   if (!$success) {
     die($db->error);
   }
-
-  header('Location: content.php');
-  exit(); 
 }
 
-function db_find_one($table, $item, $db) {
+function db_find_one($table_name, $item, $db) {
   $name = '';
-  $stmt = $db->prepare("select name from $table where name=? limit 1");
+  $stmt = $db->prepare("select name from $table_name where name=? limit 1");
   if (!$stmt) {
     die($db->error);
   }

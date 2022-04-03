@@ -8,6 +8,6 @@
         user: <?php echo $name; ?>
       </small>
     </a>
-    <button class="btn btn-outline-secondary"><a href="./logout.php" class="text-muted">ログアウト</a></button>
+    <button class="btn btn-outline-secondary"><a href="./auth/logout.php" class="text-muted">ログアウト</a></button>
   </div>
 </nav>

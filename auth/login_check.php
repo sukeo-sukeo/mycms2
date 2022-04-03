@@ -1,6 +1,6 @@
 <?php
 session_start();
-require_once('./lib/library.php');
+require_once(__DIR__ . '/../lib/library.php');
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   // 値のチェック
@@ -11,11 +11,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   var_dump([$name, $pass, $re_pass]);
   if ($name === '' || $pass === '') {
     $_SESSION['error']['login'] = 'blank';
-    header('Location: login.php');
+    header('Location: ./login.php');
     exit();
   } elseif ($pass !== $re_pass) {
     $_SESSION['error']['login'] = 'nomuch';
-    header('Location: login.php');
+    header('Location: ./login.php');
     exit();
   } else {
     $db = dbconnect();
@@ -35,14 +35,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       session_regenerate_id();
       $_SESSION['id'] = $id;
       $_SESSION['name'] = $name;
-      header('Location: index.php');
+      header('Location: ../index.php');
       exit();
     } else {
       $_SESSION['error']['login'] = 'failed';
-      header('Location: login.php');
+      header('Location: ./login.php');
       exit();
     }
   }
 } else {
-  header('Location: login.php');
+  header('Location: ./login.php');
 }
