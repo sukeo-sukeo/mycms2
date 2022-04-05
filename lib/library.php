@@ -36,6 +36,31 @@ function db_insert_one($table_name, $item, $db) {
   }
 }
 
+function db_insert_many($table_name, $items, $db) {
+  
+  $columns = implode(',', array_keys($items));
+  $values = array_values($items);
+  $questions = '';
+  for ($i=0; $i<count($items); $i++) {
+    $questions .= '?,';
+  };
+  $questions = rtrim($questions, ',');
+  
+  $query = "insert into $table_name ($columns) values ($questions)";
+  
+  $stmt = $db->prepare($query);
+
+  if (!$stmt) {
+    die($db->error);
+  }
+ 
+  $stmt->bind_param(str_repeat('s', count($items)), ...$values);
+  $success = $stmt->execute();
+  if (!$success) {
+    die($db->error);
+  }
+}
+
 function db_find_one($table_name, $item, $db) {
   $name = '';
   $stmt = $db->prepare("select name from $table_name where name=? limit 1");

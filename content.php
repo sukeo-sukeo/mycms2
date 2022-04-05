@@ -10,23 +10,13 @@ if (isset($_SESSION['id']) && isset($_SESSION['name'])) {
   exit();
 }
 
+$add_item_msg = '追加したいアイテムを入力してください';
+
 // issetはkeyがあるかないかを判定する
-// タグと共通のキーにする
-if (isset($_SESSION['add_item'])) {
-  $cate = $_SESSION['add_item'];
-
-  if ($cate === 'blank') {
-    echo '空白です';
-  }
-
-  if ($cate === 'duplicate') {
-    echo '既に登録があります';
-  }
-
-  unset($_SESSION['add_item']);
-  
-} else {
-  echo "追加に成功！";
+if (isset($_SESSION['add_item_msg'])) {
+  $add_item_msg =
+    $_SESSION['add_item_msg'];
+  unset($_SESSION['add_item_msg']);
 }
 ?>
 
@@ -52,6 +42,11 @@ if (isset($_SESSION['add_item'])) {
         <div id="top-accordion-collapse" class="accordion-collapse collapse show" aria-labelledby="top-accordion-heading" data-bs-parent="#top-accordion">
           <div class="accordion-body">
 
+            <span>
+              <?php echo $add_item_msg; ?>
+              <?php echo date('Y-m-d H：i：s'); ?>
+            </span>
+
             <form action="./scripts/item_add_check.php" method="POST" class="row mb-2">
               <div class="input-group col">
                 <span class="input-group-text">カテゴリ</span>
@@ -72,7 +67,7 @@ if (isset($_SESSION['add_item'])) {
               </div>
             </form>
 
-            <form action="./scripts/item_add_check.php" method="POST" class="row">
+            <form action="./scripts/item_add_check.php" method="POST" class="row" enctype="multipart/form-data">
               <div class="col">
                 <span class="form-label"></span>
                 <input class="form-control" type="file" name="img">
