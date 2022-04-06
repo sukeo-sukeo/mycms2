@@ -44,7 +44,6 @@ if (isset($_SESSION['add_item_msg'])) {
 
             <span>
               <?php echo $add_item_msg; ?>
-              <?php echo date('Y-m-d H：i：s'); ?>
             </span>
 
             <form action="./scripts/item_add_check.php" method="POST" class="row mb-2">
@@ -93,7 +92,7 @@ if (isset($_SESSION['add_item_msg'])) {
         </div>
         <div class="col d-flex justify-content-end align-items-center">
           <div class="form-check form-switch me-3 d-flex align-items-center">
-            <input class="form-check-input mt-0" style="width:50px; height:25px; cursor: pointer;" type="checkbox" id="publishedBtn" checked>
+            <input class="form-check-input mt-0" style="width:50px; height:25px; cursor: pointer;" type="checkbox" id="publishedBtn" checked name="published" value="true">
             <span id="publishedMsg" class="badge bg-dark ms-1">公開</span>
           </div>
           <input type="submit" value="アップロード" class="btn btn-success">
@@ -112,11 +111,6 @@ if (isset($_SESSION['add_item_msg'])) {
 
           <div class="col-6">
             <dt>メタデータ</dt>
-            <div class="input-group">
-              <span class="input-group-text">公開日</span>
-              <input class="form-control" type="text" name="created" value="2022-04-03 06:34:56">
-            </div>
-
             <div class="input-group mt-2">
               <span class="input-group-text">カテゴリ</span>
               <select class="form-select" name="category">

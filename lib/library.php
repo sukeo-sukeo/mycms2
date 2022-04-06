@@ -34,6 +34,8 @@ function db_insert_one($table_name, $item, $db) {
   if (!$success) {
     die($db->error);
   }
+  $id = $stmt->insert_id;
+  return $id;
 }
 
 function db_insert_many($table_name, $items, $db) {
@@ -58,7 +60,9 @@ function db_insert_many($table_name, $items, $db) {
   $success = $stmt->execute();
   if (!$success) {
     die($db->error);
-  }
+  };
+  $id = $stmt->insert_id;
+  return $id;
 }
 
 function db_find_one($table_name, $item, $db) {
