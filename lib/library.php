@@ -81,3 +81,26 @@ function db_find_one($table_name, $item, $db) {
   $stmt->fetch();
   return $name;
 }
+
+function db_first_get($table_name, $db) {
+  if ($table_name === 'img') {
+    // パスもとってくる
+  };
+  $id = '';
+  $name = '';
+  $results = [];
+  $stmt = $db->prepare("select id, name from $table_name");
+  if (!$stmt) {
+    die($db->error);
+  }
+  $success = $stmt->execute();
+  if (!$success) {
+    die($db->error);
+  }
+
+  $stmt->bind_result($id, $name);
+  while ($stmt->fetch()) {
+    array_push($results, [$id, $name]);
+  }
+  return $results;
+}

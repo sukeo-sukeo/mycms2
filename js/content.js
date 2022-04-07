@@ -1,5 +1,6 @@
 "use strict"
 
+// 公開|非公開 切り替えボタン
 const publishedBtn = document.getElementById("publishedBtn");
 const publisedMsg = document.getElementById("publishedMsg");
 publishedBtn.addEventListener("click", (e) => {
@@ -17,3 +18,36 @@ publishedBtn.addEventListener("click", (e) => {
   }
 });
 
+// アップロードボタン押下時のvalidation
+const uploadBtn = document.getElementById("uploadBtn");
+uploadBtn.addEventListener("click", (e) => {
+  const data = document.getElementsByClassName("blog-data");
+  if (![...data].filter(d => d.value === "").length) {
+    alert("入力不足があります");
+    e.preventDefault();
+    return;
+  }
+})
+
+// 選択したタグの表示
+const tagOkBtn = document.getElementById("tagOkBtn");
+const tagInputBox = document.getElementById("tagInputBox");
+tagOkBtn.addEventListener("click", (e) => {
+  const tags = document.getElementsByClassName("tag");
+  const vals = [...tags].filter(tag => tag.checked).map(tag => tag.id);
+  tagInputBox.value = vals.toString();
+})
+
+// 要約のコントロール
+const summaryInputBtn = document.getElementById("summaryInputBtn");
+const body = document.getElementById("body");
+const summary = document.getElementById("summary");
+const summaryCount = document.getElementById("summaryCount"); 
+const max = 200;
+summaryInputBtn.addEventListener("click", (e) => {
+  summary.value = body.value.substring(0, max);
+  summaryCount.textContent = `${summary.value.length}/${max}`;
+});
+summary.addEventListener("change", (e) => {
+  summaryCount.textContent = `${e.target.value.length}/${max}`
+})
