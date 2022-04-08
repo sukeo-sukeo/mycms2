@@ -20,7 +20,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     
     $item = db_find_one($table_name, $add_item, $db);
     if (empty($item)) {
-      db_insert_one($table_name, $add_item, $db);
+      db_insert_one($table_name, $add_item, 'name', $db);
       $_SESSION['add_item_msg'] = $add_item . ' を追加しました';
       header('Location: ../content.php');
       exit();
@@ -53,7 +53,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // 画像のアップロード
     $img_name = basename($img['name']);
     $filename = date('YmdHis') . '_' . $img_name;
-    $path = __DIR__ . '/../image/contents/' . $filename;
+    $path = './image/contents/' . $filename;
     // move_uploaded_fileは失敗するとfalseを返す
     if (!move_uploaded_file($img['tmp_name'], $path)) {
       die('ファイルのアップロードに失敗しました');

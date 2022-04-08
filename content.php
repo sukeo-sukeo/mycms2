@@ -25,10 +25,6 @@ $db = dbconnect();
 $category = db_first_get('category', $db);
 $tag = db_first_get('tag', $db);
 $img = db_first_get('img', $db);
-foreach ($category as $c) {
-  var_dump($c[0]);
-  var_dump($c[1]);
-}
 ?>
 
 <!-- html -->
@@ -153,20 +149,21 @@ foreach ($category as $c) {
             <dl>
               <dt>サムネイル</dt>
               <dd>
-                <img src="./image/sample.png" alt="" class="img-thumbnail" style="max-height: 350px;">
+                <img src="./image/sample.png" alt="" class="img-thumbnail" style="max-height: 350px;" id="thumnail">
               </dd>
 
               <dd>
                 <div class="input-group">
                   <span class="input-group-text">画像</span>
-                  <select class="form-select blog-data" name="thumnail">
+                  <select class="form-select blog-data" name="thumnail" id="thumnailSelect">
                     <option selected>選んでください</option>
                     <?php foreach ($img as $i) : ?>
-                      <option value="<?php echo $i[0] ?>"><?php echo $i[1] ?></option>
+                      <!-- 検証画面でpath全見え。自分がｔ使うだけだから良いけど -->
+                      <option value="<?php echo $i[0] ?>" id="<?php echo $i[2] ?>"><?php echo $i[1] ?></option>
                     <?php endforeach; ?>
                   </select>
                 </div>
-                <span class="text-muted">path to thumnail</span>
+                <span class="text-muted" id="thumnailPath" style="font-size: 12px;">path to thumnail</span>
               </dd>
               <dd>
                 <div class="input-group">

@@ -24,8 +24,8 @@ function dbconnect() {
   return $db;
 }
 
-function db_insert_one($table_name, $item, $db) {
-  $stmt = $db->prepare("insert into $table_name (name) values(?)");
+function db_insert_one($table_name, $item, $column, $db) {
+  $stmt = $db->prepare("insert into $table_name ($column) values(?)");
   if (!$stmt) {
     die($db->error);
   }
@@ -56,6 +56,7 @@ function db_insert_many($table_name, $items, $db) {
     die($db->error);
   }
  
+  // $type = $table_name === 'blog' ? 's' : 'i';
   $stmt->bind_param(str_repeat('s', count($items)), ...$values);
   $success = $stmt->execute();
   if (!$success) {
@@ -82,14 +83,19 @@ function db_find_one($table_name, $item, $db) {
   return $name;
 }
 
+// content.php初期表示データの取得
 function db_first_get($table_name, $db) {
-  if ($table_name === 'img') {
-    // パスもとってくる
-  };
   $id = '';
   $name = '';
+  $path = '';
   $results = [];
-  $stmt = $db->prepare("select id, name from $table_name");
+
+  if ($table_name === 'img') {
+    $stmt = $db->prepare("select id, name, path from $table_name");
+  } else {
+    $stmt = $db->prepare("select id, name from $table_name");
+  }
+
   if (!$stmt) {
     die($db->error);
   }
@@ -98,9 +104,17 @@ function db_first_get($table_name, $db) {
     die($db->error);
   }
 
-  $stmt->bind_result($id, $name);
-  while ($stmt->fetch()) {
-    array_push($results, [$id, $name]);
+  if ($table_name === 'img') {
+    $stmt->bind_result($id, $name, $path);
+    while ($stmt->fetch()) {
+      array_push($results, [$id, $name, $path]);
+    }
+  } else {
+    $stmt->bind_result($id, $name);
+    while ($stmt->fetch()) {
+      array_push($results, [$id, $name]);
+    }
   }
+
   return $results;
 }

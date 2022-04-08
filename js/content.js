@@ -51,3 +51,14 @@ summaryInputBtn.addEventListener("click", (e) => {
 summary.addEventListener("change", (e) => {
   summaryCount.textContent = `${e.target.value.length}/${max}`
 })
+
+const thumnailSelect = document.getElementById("thumnailSelect");
+const thumnailPath = document.getElementById("thumnailPath");
+const thumnail = document.getElementById("thumnail");
+
+thumnailSelect.addEventListener("change", e => {;
+  const idx = thumnailSelect.selectedIndex;
+  const path = idx ? thumnailSelect.options[idx].id : "./image/sample.png";
+  thumnailPath.textContent = idx ? path : "path to thumnail";
+  thumnail.src = path
+})
