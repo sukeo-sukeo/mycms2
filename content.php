@@ -29,6 +29,10 @@ $img = db_first_get('img', $db);
 
 <!-- html -->
 <?php require_once(__DIR__ . "/shared/head.php"); ?>
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/styles/a11y-light.min.css">
+<link rel="stylesheet" href="./css/content.css">
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/highlight.min.js"></script>
 </head>
 
 <body>
@@ -36,7 +40,6 @@ $img = db_first_get('img', $db);
   <?php require_once(__DIR__ . "/shared/header.php"); ?>
 
   <div class="container-fluid">
-
     <!-- 新規素材の追加メニューボックス -->
     <div class="accordion mt-3" id="top-accordion">
       <div class="accordion-item">
@@ -59,7 +62,7 @@ $img = db_first_get('img', $db);
                 <input class="form-control" type="text" name="category" placeholder="複数登録はカンマ区切りで入力">
               </div>
               <div class="col">
-                <input type="submit" value="カテゴリを追加" class="btn btn-secondary">
+                <input type="submit" value="カテゴリを追加" class="btn btn-secondary" id="addBtnCate">
               </div>
             </form>
 
@@ -69,7 +72,7 @@ $img = db_first_get('img', $db);
                 <input class="form-control" type="text" name="tag" placeholder="複数登録はカンマ区切りで入力">
               </div>
               <div class="col">
-                <input type="submit" value="タグを追加" class="btn btn-secondary">
+                <input type="submit" value="タグを追加" class="btn btn-secondary" id="addBtnTag">
               </div>
             </form>
 
@@ -79,7 +82,7 @@ $img = db_first_get('img', $db);
                 <input class="form-control" type="file" name="img">
               </div>
               <div class="col">
-                <input type="submit" value="画像をアップロード" class="btn btn-secondary">
+                <input type="submit" value="画像をアップロード" class="btn btn-secondary" id="addBtnImg">
               </div>
             </form>
 
@@ -90,13 +93,14 @@ $img = db_first_get('img', $db);
     </div>
 
     <!-- 記事作成 -->
-    <form action="./scripts/blog_post_check.php" method="POST" class="mt-3 container">
+    <form action="./scripts/blog_post_check.php" method="POST" class="mt-3 container-fluid">
 
       <!-- トップ -->
-      　<div class="row d-flex">
+      <div class="row d-flex mt-5">
         <div class="col-6">
           <input class="form-control blog-data" type="text" placeholder="Title" name="title">
         </div>
+        <span class="btn btn-info col-1" id="previewBtn">pre</span>
         <div class="col d-flex justify-content-end align-items-center">
           <div class="form-check form-switch me-3 d-flex align-items-center">
             <input class="form-check-input mt-0 blog-data" style="width:50px; height:25px; cursor: pointer;" type="checkbox" id="publishedBtn" checked name="published" value="true">
@@ -106,10 +110,68 @@ $img = db_first_get('img', $db);
         </div>
       </div>
 
+
       <!-- 本文 -->
-      <div class="form-floating mt-3">
-        <textarea class="form-control blog-data" style="height: 800px" id="body" name="body" placeholder="Just do it!"></textarea>
-        <label for="body">Just do it!</label>
+      <div class="mt-3 d-flex row">
+
+        <!-- 制御パネル -->
+        <div class="row">
+          <dl class="d-flex">
+            
+            <div>
+              <dt id="ctl_table">
+                テーブル
+              </dt>
+              <div class="d-flex">
+                <dd>
+                  <select name="yoko" id="ctl_yoko">
+                    <?php for ($i = 2; $i < 10; $i++) : ?>
+                      <option value="<?php echo $i ?>"><?php echo $i ?></option>
+                    <?php endfor; ?>
+                  </select>
+                </dd>
+                <dd>
+                  <select name="tate" id="ctl_tate">
+                    <?php for ($i = 1; $i < 10; $i++) : ?>
+                      <option value="<?php echo $i ?>"><?php echo $i ?></option>
+                    <?php endfor; ?>
+                  </select>
+                </dd>
+              </div>
+            </div>
+
+            <div>
+              <dt id="ctl_img">
+                画像
+              </dt>
+            </div>
+            
+            <!-- <div>
+              <dt id="ctl_delete">
+                削除
+              </dt>
+            </div>
+
+            <div>
+              <dt id="ctl_undo">
+                戻す
+              </dt>
+            </div> -->
+
+          </dl>
+
+        </div>
+
+        <!-- 入力 -->
+        <div class="form-floating col-12" id="bodyWrapper">
+          <textarea class="form-control blog-data" style="height: 800px" id="body" name="body" placeholder="本文"></textarea>
+          <label for="body">本文</label>
+        </div>
+
+        <!-- プレビュー -->
+        <div class="col-6 overflow-scroll d-none preview" style="height: 800px" id="preview">
+          <!-- preview -->
+        </div>
       </div>
 
       <!-- データ付与 -->
@@ -121,7 +183,7 @@ $img = db_first_get('img', $db);
             <div class="input-group mt-2">
               <span class="input-group-text">カテゴリ</span>
               <select class="form-select blog-data" name="category">
-                <option selected>選んでください</option>
+                <option value="" selected>選んでください</option>
                 <?php foreach ($category as $c) : ?>
                   <option value="<?php echo $c[0] ?>"><?php echo $c[1] ?></option>
                 <?php endforeach; ?>
@@ -156,7 +218,7 @@ $img = db_first_get('img', $db);
                 <div class="input-group">
                   <span class="input-group-text">画像</span>
                   <select class="form-select blog-data" name="thumnail" id="thumnailSelect">
-                    <option selected>選んでください</option>
+                    <option value="" selected>選んでください</option>
                     <?php foreach ($img as $i) : ?>
                       <!-- 検証画面でpath全見え。自分がｔ使うだけだから良いけど -->
                       <option value="<?php echo $i[0] ?>" id="<?php echo $i[2] ?>"><?php echo $i[1] ?></option>
@@ -168,7 +230,7 @@ $img = db_first_get('img', $db);
               <dd>
                 <div class="input-group">
                   <span class="input-group-text">SEO</span>
-                  <input class="form-control blog-data" type="text" placeholder="altタグの値として使用" name="thumnail_seo">
+                  <input class="form-control blog-data" type="text" placeholder="altタグの値として使用" name="thumnail_seo" id="thumnailSeo">
                 </div>
               </dd>
             </dl>
@@ -189,10 +251,8 @@ $img = db_first_get('img', $db);
             <div class="modal-body">
               <?php foreach ($tag as $t) : ?>
                 <div class="form-check">
-                  <input class="form-check-input blog-data tag" id="<?php echo $t[1]; ?>" type="checkbox" name="tag[]" value="<?php echo $t[0]; ?>">
-                  <label class="form-check-label" for="<?php echo $t[1]; ?>">
-                    <?php echo $t[1]; ?>
-                  </label>
+                  <input class="form-check-input blog-data tag" id="<?php echo $t[0]; ?>" type="checkbox" name="tag[]" value="<?php echo $t[0]; ?>">
+                  <label class="form-check-label" for="<?php echo $t[0]; ?>"><?php echo $t[1]; ?></label>
                 </div>
               <?php endforeach; ?>
             </div>
@@ -205,6 +265,10 @@ $img = db_first_get('img', $db);
       </div>
 
     </form>
+
   </div>
   <?php require_once(__DIR__ . "/shared/footer.php"); ?>
+  <script src="./js/marked.js"></script>
+  <script src="./js/content_const.js"></script>
+  <script src="./js/content_library.js"></script>
   <script src="./js/content.js"></script>

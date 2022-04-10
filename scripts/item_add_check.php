@@ -17,18 +17,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       header('Location: ../content.php');
       exit();
     }
+
+    // カンマ区切りに対応
+    $add_items = explode(',', str_replace('、',',',$add_item));
     
-    $item = db_find_one($table_name, $add_item, $db);
-    if (empty($item)) {
-      db_insert_one($table_name, $add_item, 'name', $db);
-      $_SESSION['add_item_msg'] = $add_item . ' を追加しました';
-      header('Location: ../content.php');
-      exit();
-    } else {
-      $_SESSION['add_item_msg'] = $add_item . ' は既に登録がありました';
-      header('Location: ../content.php');
-      exit();
-    }
+    foreach ($add_items as $add_item) {
+      $item = db_find_one($table_name, trim($add_item), $db);
+      // itemが存在しなかったら新規登録
+      if (empty($item)) {
+        db_insert_one($table_name, $add_item, 'name', $db);
+        $_SESSION['add_item_msg'] .= $add_item . '<span class="badge bg-success">OK</span> ';
+      } else {
+        $_SESSION['add_item_msg'] .= $add_item . '<span class="badge bg-secondary">Already</span> ';
+      }
+    };
+    header('Location: ../content.php');
+    exit(); 
   }
 
   // 画像の登録
@@ -53,14 +57,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // 画像のアップロード
     $img_name = basename($img['name']);
     $filename = date('YmdHis') . '_' . $img_name;
-    $path = './image/contents/' . $filename;
+    $path = 'image/contents/' . $filename;
     // move_uploaded_fileは失敗するとfalseを返す
-    if (!move_uploaded_file($img['tmp_name'], $path)) {
+    if (!move_uploaded_file($img['tmp_name'], '../' . $path)) {
       die('ファイルのアップロードに失敗しました');
     }
 
     // dbへパスを保存
-    $items = ['path'=>$path, 'name'=>$img_name, 'meta_name'=>$filename];
+    $items = [
+      'path' => './' . $path,
+      'name' => $img_name,
+      'meta_name' => $filename
+    ];
     db_insert_many('img', $items, $db);
     
 
