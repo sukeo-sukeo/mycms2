@@ -100,7 +100,6 @@ $img = db_first_get('img', $db);
         <div class="col-6">
           <input class="form-control blog-data" type="text" placeholder="Title" name="title">
         </div>
-        <span class="btn btn-info col-1" id="previewBtn">pre</span>
         <div class="col d-flex justify-content-end align-items-center">
           <div class="form-check form-switch me-3 d-flex align-items-center">
             <input class="form-check-input mt-0 blog-data" style="width:50px; height:25px; cursor: pointer;" type="checkbox" id="publishedBtn" checked name="published" value="true">
@@ -115,23 +114,25 @@ $img = db_first_get('img', $db);
       <div class="mt-3 d-flex row">
 
         <!-- 制御パネル -->
-        <div class="row">
+        <div class="row ctl_panel">
           <dl class="d-flex">
-            
-            <div>
+
+            <div class="d-flex">
               <dt id="ctl_table">
-                テーブル
+                <span class="btn btn-secondary">
+                  <img src="./assets/icon/table.svg" alt="">
+                </span>
               </dt>
               <div class="d-flex">
                 <dd>
-                  <select name="yoko" id="ctl_yoko">
+                  <select name="yoko" id="ctl_yoko" class="form-select">
                     <?php for ($i = 2; $i < 10; $i++) : ?>
                       <option value="<?php echo $i ?>"><?php echo $i ?></option>
                     <?php endfor; ?>
                   </select>
                 </dd>
                 <dd>
-                  <select name="tate" id="ctl_tate">
+                  <select name="tate" id="ctl_tate" class="form-select">
                     <?php for ($i = 1; $i < 10; $i++) : ?>
                       <option value="<?php echo $i ?>"><?php echo $i ?></option>
                     <?php endfor; ?>
@@ -140,12 +141,22 @@ $img = db_first_get('img', $db);
               </div>
             </div>
 
-            <div>
+            <div class="d-flex ms-2">
               <dt id="ctl_img">
-                画像
+                <span class="btn btn-secondary">
+                  <img src="./assets/icon/card-image.svg" alt="">
+                </span>
               </dt>
+              <dd>
+                <select class="form-select" id="ctl_img_select">
+                  <option value="" selected>選んでください</option>
+                  <?php foreach ($img as $i) : ?>
+                    <option value="<?php echo $i[0] ?>" data-path="<?php echo $i[2] ?>"><?php echo $i[1] ?></option>
+                  <?php endforeach; ?>
+                </select>
+              </dd>
             </div>
-            
+
             <!-- <div>
               <dt id="ctl_delete">
                 削除
@@ -157,6 +168,12 @@ $img = db_first_get('img', $db);
                 戻す
               </dt>
             </div> -->
+
+            <div class="ms-5">
+              <span class="btn btn-secondary" id="previewBtn">
+                <img src="./assets/icon/eye.svg" alt="">
+              </span>
+            </div>
 
           </dl>
 
@@ -221,7 +238,7 @@ $img = db_first_get('img', $db);
                     <option value="" selected>選んでください</option>
                     <?php foreach ($img as $i) : ?>
                       <!-- 検証画面でpath全見え。自分がｔ使うだけだから良いけど -->
-                      <option value="<?php echo $i[0] ?>" id="<?php echo $i[2] ?>"><?php echo $i[1] ?></option>
+                      <option value="<?php echo $i[0] ?>" data-path="<?php echo $i[2] ?>"><?php echo $i[1] ?></option>
                     <?php endforeach; ?>
                   </select>
                 </div>

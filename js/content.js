@@ -126,6 +126,21 @@ ctl_table.addEventListener("click", e => {
     }
   }
 
-  body.value = body.value.substr(0, body.selectionStart) + table + body.value.substr(body.selectionStart);
+  insertBody(table);
+  toPreview();
+});
+
+ctl_img.addEventListener("click", e => {
+  insertBody("![]()");
+  toPreview();
+})
+
+ctl_img_select.addEventListener("change", e => {
+  const idx = ctl_img_select.selectedIndex;
+  const path = idx
+    ? ctl_img_select.options[idx].dataset.path
+    : "";
+  const name = idx ? ctl_img_select.options[idx].textContent : "";
+  insertBody(`![${name}](${path})`);
   toPreview();
 });

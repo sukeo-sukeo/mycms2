@@ -36,12 +36,22 @@ var_dump($img);
             <input type="text" class="w-75" value="<?php echo explode('.', $i[1])[0] ?>">
             <span><?php echo '.' . explode('.', $i[1])[1] ?></span>
           </div>
-          <div class="col-1">copy path</div>
-          <div class="col-3">created <?php echo explode(" ", $i[3])[0]; ?></div>
-          <div class="col-1">削除</div>
+          <div class="col-2 copyPath" data-path="<?php echo $i[2] ?>">
+            <img src="./assets/icon/link-45deg.svg" alt="">
+            <span class="text-muted">copy</span>
+          </div>
+          <div class="col-3">
+            <span class="text-muted">
+              <img src="./assets/icon/alarm.svg" alt="">
+              created <?php echo explode(" ", $i[3])[0]; ?></div>
+          </span>
+          <div class="col-1">
+            <img src="./assets/icon/trash.svg" alt="">
+          </div>
         </li>
       <?php endforeach; ?>
     </ul>
   </div>
   <?php require_once(__DIR__ . "/shared/footer.php"); ?>
   <!-- script -->
+  <script src="./js/media.js"></script>

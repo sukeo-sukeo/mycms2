@@ -1,3 +1,9 @@
+.ctl_panel {
+  position: sticky;
+  top: 65px;
+  z-index: 10;
+}
+
 .preview pre {
   padding-top: 15px;
   border-radius: 3px;

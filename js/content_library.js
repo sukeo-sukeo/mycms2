@@ -50,7 +50,7 @@ const displayTag = () => {
 
 const displayThumnail = () => {
   const idx = thumnailSelect.selectedIndex;
-  const path = idx ? thumnailSelect.options[idx].id : "./image/sample.png";
+  const path = idx ? thumnailSelect.options[idx].dataset.path : "./image/sample.png";
   const name = idx ? thumnailSelect.options[idx].textContent : "";
   thumnailPath.textContent = idx ? path : "path to thumnail";
   thumnailSeo.value = name.split(".")[0];
@@ -67,3 +67,10 @@ const togglePreview = () => {
 const toPreview = () => {
   preview.innerHTML = marked.parse(body.value);
 }
+
+const insertBody = (item) => {
+  body.value =
+    body.value.substr(0, body.selectionStart) +
+    item +
+    body.value.substr(body.selectionStart);
+};
