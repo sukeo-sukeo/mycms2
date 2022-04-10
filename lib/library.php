@@ -88,10 +88,11 @@ function db_first_get($table_name, $db) {
   $id = '';
   $name = '';
   $path = '';
+  $created = '';
   $results = [];
 
   if ($table_name === 'img') {
-    $stmt = $db->prepare("select id, name, path from $table_name");
+    $stmt = $db->prepare("select id, name, path, created from $table_name");
   } else {
     $stmt = $db->prepare("select id, name from $table_name");
   }
@@ -105,9 +106,9 @@ function db_first_get($table_name, $db) {
   }
 
   if ($table_name === 'img') {
-    $stmt->bind_result($id, $name, $path);
+    $stmt->bind_result($id, $name, $path, $created);
     while ($stmt->fetch()) {
-      array_push($results, [$id, $name, $path]);
+      array_push($results, [$id, $name, $path, $created]);
     }
   } else {
     $stmt->bind_result($id, $name);
