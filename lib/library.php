@@ -83,6 +83,19 @@ function db_find_one($table_name, $item, $db) {
   return $name;
 }
 
+function db_delete_one($table_name, $id, $db) {
+  $stmt = $db->prepare("delete from $table_name where id=? limit 1");
+  if (!$stmt) {
+    die($db->error);
+  }
+
+  $stmt->bind_param('i', $id);
+  $success = $stmt->execute();
+  if (!$success) {
+    die($db->error);
+  }
+}
+
 // content.php初期表示データの取得
 function db_first_get($table_name, $db) {
   $id = '';

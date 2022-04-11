@@ -29,10 +29,9 @@ $img = db_first_get('img', $db);
 
 <!-- html -->
 <?php require_once(__DIR__ . "/shared/head.php"); ?>
+<!-- css -->
 <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/styles/a11y-light.min.css">
 <link rel="stylesheet" href="./css/content.css">
-<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/highlight.min.js"></script>
 </head>
 
 <body>
@@ -285,6 +284,8 @@ $img = db_first_get('img', $db);
 
   </div>
   <?php require_once(__DIR__ . "/shared/footer.php"); ?>
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/highlight.min.js"></script>
   <script src="./js/marked.js"></script>
   <script src="./js/content_const.js"></script>
   <script src="./js/content_library.js"></script>
