@@ -22,6 +22,15 @@ if (isset($_SESSION['add_item_msg'])) {
 
 // dbからアイテム読み込み
 $db = dbconnect();
+
+$blog_id =
+filter_input(INPUT_GET, 'id', FILTER_SANITIZE_NUMBER_INT);
+
+var_dump($blog_id);
+if ($blog_id) {
+  db_find_blog('blog', $blog_id, $db);
+}
+
 $category = db_first_get('category', $db);
 $tag = db_first_get('tag', $db);
 $img = db_first_get('img', $db);
