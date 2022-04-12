@@ -14,7 +14,7 @@ if (isset($_SESSION['id']) && isset($_SESSION['name'])) {
 // dbからアイテム読み込み
 $db = dbconnect();
 $img = db_first_get('img', $db);
-var_dump($img);
+
 ?>
 
 <!-- html -->
@@ -43,6 +43,7 @@ var_dump($img);
                 done
               </button>
               <input type="hidden" name="change_id" value="<?php echo $i[0] ?>">
+              <input type="hidden" name="ext" value="<?php echo '.' . explode('.', $i[1])[1] ?>">
             </form>
           </div>
           <div class="col-2 copyPath" data-path="<?php echo $i[2] ?>">

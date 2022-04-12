@@ -96,7 +96,20 @@ function db_delete_one($table_name, $id, $db) {
   }
 }
 
-// content.php初期表示データの取得
+function db_update_one($table_name, $name, $id, $db) {
+  $stmt = $db->prepare("update $table_name set name=? where id=?");
+  if (!$stmt) {
+    die($db->error);
+  }
+
+  $stmt->bind_param('si', $name, $id);
+  $success = $stmt->execute();
+  if (!$success) {
+    die($db->error);
+  }
+}
+
+// 初期表示データの取得
 function db_first_get($table_name, $db) {
   $id = '';
   $name = '';
@@ -105,7 +118,7 @@ function db_first_get($table_name, $db) {
   $results = [];
 
   if ($table_name === 'img') {
-    $stmt = $db->prepare("select id, name, path, created from $table_name");
+    $stmt = $db->prepare("select id, name, path, created from $table_name order by created desc");
   } else {
     $stmt = $db->prepare("select id, name from $table_name");
   }

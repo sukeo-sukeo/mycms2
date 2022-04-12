@@ -16,13 +16,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   }
 
   if (isset($_REQUEST['change_name'])) {
-    var_dump("change!");
-    exit();
-    $img_id = (int) filter_input(INPUT_POST, 'change', FILTER_SANITIZE_STRING);
+    $img_name = filter_input(INPUT_POST, 'change_name', FILTER_SANITIZE_STRING);
+    $ext = filter_input(INPUT_POST, 'ext', FILTER_SANITIZE_STRING);
+    $img_id = (int) filter_input(INPUT_POST, 'change_id', FILTER_SANITIZE_STRING);
 
     $db = dbconnect();
 
-    db_delete_one('img', $img_id, $db);
+    db_update_one('img', $img_name.$ext, $img_id, $db);
     header('Location: ../media.php');
     exit();
   }
