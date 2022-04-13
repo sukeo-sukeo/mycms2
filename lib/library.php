@@ -95,10 +95,9 @@ function db_find_blog($table_name, $blog_id, $db) {
   $thumnail_seo = '';
   $path = '';
   $category = '';
-  $tag = '';
 
-  $stmt = $db->prepare("
-      select b.id, b.title, b.body, b.published, b.summary, bi.thumnail_seo, i.path, c.name, t.name
+  $query = "
+      select b.id, b.title, b.body, b.published, b.summary, bi.thumnail_seo, i.path, c.name
       from 
       $table_name b 
       left join 
@@ -116,10 +115,9 @@ function db_find_blog($table_name, $blog_id, $db) {
       left join
       category c
       on bc.category_id = c.id
-      left join
-      tag t
-      on bt.tag_id = t.id
-      where b.id = ? limit 1");
+      where b.id = ? limit 1";
+
+  $stmt = $db->prepare($query);
   if (!$stmt) {
     die($db->error);
   }
@@ -129,7 +127,7 @@ function db_find_blog($table_name, $blog_id, $db) {
     die($db->error);
   };
 
-  $stmt->bind_result($id, $title, $body, $published, $summary, $thumnail_seo, $path, $category, $tag);
+  $stmt->bind_result($id, $title, $body, $published, $summary, $thumnail_seo, $path, $category);
   $stmt->fetch();
 
   $result['id'] = $id;
@@ -140,13 +138,12 @@ function db_find_blog($table_name, $blog_id, $db) {
   $result['thumnail_seo'] = $thumnail_seo;
   $result['path'] = $path;
   $result['category'] = $category;
-  $result['tag'] = $tag;
 
+  // ここでもう一回タグをとってくる...
   var_dump($result);
   exit();
   return $result;
 }
-
 
 
 function db_delete_one($table_name, $id, $db) {

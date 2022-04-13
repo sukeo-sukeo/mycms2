@@ -2,6 +2,7 @@
 session_start();
 require_once(__DIR__ . '/../lib/library.php');
 
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   // 値のチェック
   $name = filter_input(INPUT_POST, 'name', FILTER_SANITIZE_EMAIL);

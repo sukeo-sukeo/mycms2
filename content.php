@@ -28,7 +28,7 @@ filter_input(INPUT_GET, 'id', FILTER_SANITIZE_NUMBER_INT);
 
 var_dump($blog_id);
 if ($blog_id) {
-  db_find_blog('blog', $blog_id, $db);
+  $blog = db_find_blog('blog', $blog_id, $db);
 }
 
 $category = db_first_get('category', $db);
@@ -164,18 +164,6 @@ $img = db_first_get('img', $db);
                 </select>
               </dd>
             </div>
-
-            <!-- <div>
-              <dt id="ctl_delete">
-                削除
-              </dt>
-            </div>
-
-            <div>
-              <dt id="ctl_undo">
-                戻す
-              </dt>
-            </div> -->
 
             <div class="ms-5">
               <span class="btn btn-secondary" id="previewBtn">
