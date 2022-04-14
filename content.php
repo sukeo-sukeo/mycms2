@@ -23,13 +23,34 @@ if (isset($_SESSION['add_item_msg'])) {
 // dbからアイテム読み込み
 $db = dbconnect();
 
-$blog_id =
-filter_input(INPUT_GET, 'id', FILTER_SANITIZE_NUMBER_INT);
+////////////////////////////////
+// このへん変更する
+// 直前のデータを読み込むボタンをつくる
+/////////////////////////////////
+// getパラメータのチェック
+$blog_id = filter_input(INPUT_GET, 'id', FILTER_SANITIZE_NUMBER_INT);
+// $blog変数の値の有無で新規作成か編集か判定
+$blog = '';
 
-var_dump($blog_id);
 if ($blog_id) {
-  $blog = db_find_blog('blog', $blog_id, $db);
+  // sessionをチェック
+  if (isset($_SESSION['blog'])) {
+    // sessionがあればそれを使う
+    $blog = $_SESSION['blog'];
+  } else {
+    // sessionがなければdbからとってくる
+    $blog = db_first_get('single', $db, $blog_id);
+    $blog['tag_id'] = db_first_get('tag_single', $db, $blog_id);
+    $_SESSION['blog'] = $blog;
+  }
+} else {
+  // getパラメータがなければ新規作成画面とみなす
+  unset($_SESSION['blog']);
+  $blog = '';
 }
+
+var_dump($_SESSION);
+var_dump($blog);
 
 $category = db_first_get('category', $db);
 $tag = db_first_get('tag', $db);
@@ -106,14 +127,14 @@ $img = db_first_get('img', $db);
       <!-- トップ -->
       <div class="row d-flex mt-5">
         <div class="col-6">
-          <input class="form-control blog-data" type="text" placeholder="Title" name="title">
+          <input class="form-control blog-data" type="text" placeholder="Title" name="title" value="<?php echo $blog ? $blog['title'] : '' ?>">
         </div>
         <div class="col d-flex justify-content-end align-items-center">
           <div class="form-check form-switch me-3 d-flex align-items-center">
-            <input class="form-check-input mt-0 blog-data" style="width:50px; height:25px; cursor: pointer;" type="checkbox" id="publishedBtn" checked name="published" value="true">
+            <input class="form-check-input mt-0 blog-data" style="width:50px; height:25px; cursor: pointer;" type="checkbox" id="publishedBtn" checked name="published" value="<?php echo $blog ? $blog['published'] : 'true' ?>">
             <span id="publishedMsg" class="badge bg-dark ms-1">公開</span>
           </div>
-          <input type="submit" value="アップロード" class="btn btn-success" id="uploadBtn">
+          <input type="submit" value="<?php echo $blog ? '更新する' : 'アップロード' ?>" class="btn btn-success" id="uploadBtn">
         </div>
       </div>
 
@@ -177,7 +198,7 @@ $img = db_first_get('img', $db);
 
         <!-- 入力 -->
         <div class="form-floating col-12" id="bodyWrapper">
-          <textarea class="form-control blog-data" style="height: 800px" id="body" name="body" placeholder="本文"></textarea>
+          <textarea class="form-control blog-data" style="height: 800px" id="body" name="body" placeholder="本文"><?php echo $blog ? $blog['body'] : '' ?></textarea>
           <label for="body">本文</label>
         </div>
 
@@ -287,3 +308,6 @@ $img = db_first_get('img', $db);
   <script src="./js/content_const.js"></script>
   <script src="./js/content_library.js"></script>
   <script src="./js/content.js"></script>
+  <?php if (!$blog) : ?>
+    <script src="./js/content_init.js"></script>
+  <?php endif; ?>

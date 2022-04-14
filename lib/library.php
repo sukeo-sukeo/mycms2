@@ -84,68 +84,6 @@ function db_find_one($table_name, $item, $db) {
   return $name;
 }
 
-function db_find_blog($table_name, $blog_id, $db) {
-  $result = [];
-
-  $id = '';
-  $title = '';
-  $body = '';
-  $published = '';
-  $summary = '';
-  $thumnail_seo = '';
-  $path = '';
-  $category = '';
-
-  $query = "
-      select b.id, b.title, b.body, b.published, b.summary, bi.thumnail_seo, i.path, c.name
-      from 
-      $table_name b 
-      left join 
-      blog_thumnail bi 
-      on b.id = bi.blog_id
-      left join 
-      blog_category bc
-      on b.id = bc.blog_id
-      left join 
-      blog_tag bt
-      on b.id = bt.blog_id
-      left join
-      img i
-      on bi.img_id = i.id
-      left join
-      category c
-      on bc.category_id = c.id
-      where b.id = ? limit 1";
-
-  $stmt = $db->prepare($query);
-  if (!$stmt) {
-    die($db->error);
-  }
-  $stmt->bind_param('s', $blog_id);
-  $success = $stmt->execute();
-  if (!$success) {
-    die($db->error);
-  };
-
-  $stmt->bind_result($id, $title, $body, $published, $summary, $thumnail_seo, $path, $category);
-  $stmt->fetch();
-
-  $result['id'] = $id;
-  $result['title'] = $title;
-  $result['body'] = $body;
-  $result['published'] = $published;
-  $result['summary'] = $summary;
-  $result['thumnail_seo'] = $thumnail_seo;
-  $result['path'] = $path;
-  $result['category'] = $category;
-
-  // ここでもう一回タグをとってくる...
-  var_dump($result);
-  exit();
-  return $result;
-}
-
-
 function db_delete_one($table_name, $id, $db) {
   $stmt = $db->prepare("delete from $table_name where id=? limit 1");
   if (!$stmt) {
@@ -173,7 +111,7 @@ function db_update_one($table_name, $name, $id, $db) {
 }
 
 // 初期表示データの取得
-function db_first_get($table_name, $db) {
+function db_first_get($table_name, $db, $blog_id='') {
   // 変数列挙->改善の余地あり
   $id = '';
   $name = '';
@@ -184,6 +122,14 @@ function db_first_get($table_name, $db) {
   $updated = '';
   $img_id = '';
   $img_path = '';
+
+  // single
+  $body = '';
+  $summary = '';
+  $category_id = '';
+  $thumnail_id = '';
+  $thumnail_seo = '';
+  $tag_id = '';
 
   $results = [];
 
@@ -202,6 +148,22 @@ function db_first_get($table_name, $db) {
     break;
     case 'img':
       $query = "select id, name, path, created from $table_name order by id desc";
+    break;
+    case 'single':
+      $query = "select 
+      b.id, b.title, b.body, b.summary, b.published, b.updated, bc.category_id, bt.img_id, bt.thumnail_seo 
+      from 
+      blog b
+      left join
+      blog_category bc
+      on b.id = bc.blog_id
+      left join
+      blog_thumnail bt
+      on b.id = bt.blog_id
+      where b.id = $blog_id limit 1";
+    break;
+    case 'tag_single':
+      $query = "select tag_id from blog_tag where blog_id = $blog_id";
     break;
     default:
       $query = "select id, name from $table_name order by id desc";
@@ -232,11 +194,31 @@ function db_first_get($table_name, $db) {
         array_push($results, [$id, $name, $path, $created]);
       }
     break;
+    case 'single':
+      $stmt->bind_result($id, $title, $body, $summary, $published, $updated, $category_id, $thumnail_id, $thumnail_seo);
+      $stmt->fetch();
+      $results['id'] = $id;
+      $results['title'] = $title;
+      $results['body'] = $body;
+      $results['summary'] = $summary;
+      $results['published'] = $published;
+      $results['updated'] = $updated;
+      $results['category_id'] = $category_id;
+      $results['thumnail_id'] = $thumnail_id;
+      $results['thumnail_seo'] = $thumnail_seo;
+    break;
+    case 'tag_single':
+      $stmt->bind_result($tag_id);
+      while ($stmt->fetch()) {
+        array_push($results, $tag_id);
+      };
+    break;
     default:
       $stmt->bind_result($id, $name);
       while ($stmt->fetch()) {
         array_push($results, [$id, $name]);
       }
+    break;
   }
 
   return $results;
