@@ -16,6 +16,35 @@ const changePublish = (isPublished) => {
   }
 };
 
+const displayThumnail = () => {
+  const idx = thumnailSelect.selectedIndex;
+  const path = idx
+    ? thumnailSelect.options[idx].dataset.path
+    : "./image/sample.png";
+  const name = idx ? thumnailSelect.options[idx].textContent : "";
+  thumnailPath.textContent = idx ? path : "path to thumnail";
+  thumnailSeo.value = name.split(".")[0];
+  thumnail.src = path;
+};
+
+const togglePreview = () => {
+  isPreview = !isPreview; //ローカルストレージに保存しリロード時に活用
+  bodyWrapper.classList.toggle("col-6");
+  bodyWrapper.classList.toggle("col-12");
+  preview.classList.toggle("d-none");
+};
+
+const toPreview = () => {
+  preview.innerHTML = marked.parse(body.value);
+}
+
+const insertBody = (item) => {
+  body.value =
+    body.value.substr(0, body.selectionStart) +
+    item +
+    body.value.substr(body.selectionStart);
+};
+
 // 値の一時保存
 const save = (e) => {
   // e.preventDefault();
@@ -48,29 +77,47 @@ const displayTag = () => {
   tagInputBox.value = vals.toString();
 };
 
-const displayThumnail = () => {
-  const idx = thumnailSelect.selectedIndex;
-  const path = idx ? thumnailSelect.options[idx].dataset.path : "./image/sample.png";
-  const name = idx ? thumnailSelect.options[idx].textContent : "";
-  thumnailPath.textContent = idx ? path : "path to thumnail";
-  thumnailSeo.value = name.split(".")[0];
-  thumnail.src = path;
+// 値のロード
+const onLoading = () => {
+  const items = JSON.parse(localStorage.getItem("mycms2"));
+  const tags = JSON.parse(localStorage.getItem("mycms2-tags"));
+  [...data].forEach((d, i) => {
+    if (d.name !== "tag[]") {
+      d.value = items[i][1];
+    } else {
+      tags.forEach((tag) => {
+        if (tag === d.id) {
+          d.checked = true;
+        }
+      });
+    }
+  });
 };
 
-const togglePreview = () => {
-  isPreview = !isPreview; //ローカルストレージに保存しリロード時に活用
-  bodyWrapper.classList.toggle("col-6");
-  bodyWrapper.classList.toggle("col-12");
-  preview.classList.toggle("d-none");
-};
+// 初期描画等
+const init = () => {
+  // オートセーブ処理の登録
+  const inputs = document.getElementsByTagName("input");
+  const textAreas = document.getElementsByTagName("textarea");
+  const selects = document.getElementsByTagName("select");
+  [...inputs].forEach((i) => i.addEventListener("blur", (e) => save()));
+  [...textAreas].forEach((i) => i.addEventListener("blur", (e) => save()));
+  [...selects].forEach((i) => i.addEventListener("change", (e) => save()));
 
-const toPreview = () => {
-  preview.innerHTML = marked.parse(body.value);
+  // タグ描画の連動
+  displayTag();
+  // サムネイル描画の連動
+  displayThumnail();
+  // プレビューの開閉の連動
+  if (JSON.parse(localStorage.getItem("mycms2-isPreview"))) {
+    togglePreview();
+  }
+  // プレビュー描画の連動
+  toPreview();
+  // 公開|非公開のボタン表現の連動
+  const isPublished = JSON.parse(publishedBtn.value);
+  if (!isPublished) {
+    publishedBtn.removeAttribute("checked");
+  }
+  changePublish(isPublished);
 }
-
-const insertBody = (item) => {
-  body.value =
-    body.value.substr(0, body.selectionStart) +
-    item +
-    body.value.substr(body.selectionStart);
-};

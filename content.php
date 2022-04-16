@@ -23,34 +23,22 @@ if (isset($_SESSION['add_item_msg'])) {
 // dbからアイテム読み込み
 $db = dbconnect();
 
-////////////////////////////////
-// このへん変更する
-// 直前のデータを読み込むボタンをつくる
-/////////////////////////////////
 // getパラメータのチェック
 $blog_id = filter_input(INPUT_GET, 'id', FILTER_SANITIZE_NUMBER_INT);
 // $blog変数の値の有無で新規作成か編集か判定
 $blog = '';
 
 if ($blog_id) {
-  // sessionをチェック
-  if (isset($_SESSION['blog'])) {
-    // sessionがあればそれを使う
-    $blog = $_SESSION['blog'];
-  } else {
-    // sessionがなければdbからとってくる
-    $blog = db_first_get('single', $db, $blog_id);
-    $blog['tag_id'] = db_first_get('tag_single', $db, $blog_id);
-    $_SESSION['blog'] = $blog;
-  }
+  $blog = db_first_get('single', $db, $blog_id);
+  $blog['tag_id'] = db_first_get('tag_single', $db, $blog_id);
+  $_SESSION['edit_id'] = $blog_id;
 } else {
-  // getパラメータがなければ新規作成画面とみなす
-  unset($_SESSION['blog']);
-  $blog = '';
+  if (isset($_SESSION['edit_id'])) {
+    unset($_SESSION['edit_id']);
+  }
 }
 
 var_dump($_SESSION);
-var_dump($blog);
 
 $category = db_first_get('category', $db);
 $tag = db_first_get('tag', $db);
@@ -123,7 +111,7 @@ $img = db_first_get('img', $db);
 
     <!-- 記事作成 -->
     <form action="./scripts/blog_post_check.php" method="POST" class="mt-3 container-fluid">
-
+  
       <!-- トップ -->
       <div class="row d-flex mt-5">
         <div class="col-6">
@@ -219,7 +207,12 @@ $img = db_first_get('img', $db);
               <select class="form-select blog-data" name="category">
                 <option value="" selected>選んでください</option>
                 <?php foreach ($category as $c) : ?>
-                  <option value="<?php echo $c[0] ?>"><?php echo $c[1] ?></option>
+                  <option value="<?php echo $c[0] ?>" 
+                  <?php if ($blog) {
+                    if ($blog['category_id'] === $c[0]) {
+                      echo 'selected';
+                      }
+                    }?>><?php echo $c[1] ?></option>
                 <?php endforeach; ?>
               </select>
             </div>
@@ -230,7 +223,7 @@ $img = db_first_get('img', $db);
             </div>
 
             <div class="form-floating mt-2">
-              <textarea class="form-control blog-data" style="height: 150px" id="summary" name="summary" placeholder="要約" maxlength="200"></textarea>
+              <textarea class="form-control blog-data" style="height: 150px" id="summary" name="summary" placeholder="要約" maxlength="200"><?php echo $blog ? $blog['summary'] : ''?></textarea>
               <label for="body">要約</label>
               <div class="d-flex justify-content-between">
                 <span class="btn btn-secondary btn-sm mt-1" id="summaryInputBtn">冒頭を挿入</span>
@@ -255,7 +248,11 @@ $img = db_first_get('img', $db);
                     <option value="" selected>選んでください</option>
                     <?php foreach ($img as $i) : ?>
                       <!-- 検証画面でpath全見え。自分がｔ使うだけだから良いけど -->
-                      <option value="<?php echo $i[0] ?>" data-path="<?php echo $i[2] ?>"><?php echo $i[1] ?></option>
+                      <option value="<?php echo $i[0] ?>" data-path="<?php echo $i[2] ?>" <?php if ($blog) {
+                    if ($blog['thumnail_id'] === $i[0]) {
+                      echo 'selected';
+                      }
+                    }?>><?php echo $i[1] ?></option>
                     <?php endforeach; ?>
                   </select>
                 </div>
@@ -264,7 +261,7 @@ $img = db_first_get('img', $db);
               <dd>
                 <div class="input-group">
                   <span class="input-group-text">SEO</span>
-                  <input class="form-control blog-data" type="text" placeholder="altタグの値として使用" name="thumnail_seo" id="thumnailSeo">
+                  <input class="form-control blog-data" type="text" placeholder="altタグの値として使用" name="thumnail_seo" id="thumnailSeo" value="<?php echo $blog ? $blog['thumnail_seo'] : '' ?>">
                 </div>
               </dd>
             </dl>
@@ -285,7 +282,13 @@ $img = db_first_get('img', $db);
             <div class="modal-body">
               <?php foreach ($tag as $t) : ?>
                 <div class="form-check">
-                  <input class="form-check-input blog-data tag" id="<?php echo $t[0]; ?>" type="checkbox" name="tag[]" value="<?php echo $t[0]; ?>">
+                  <input class="form-check-input blog-data tag" id="<?php echo $t[0]; ?>" type="checkbox" name="tag[]" value="<?php echo $t[0]; ?>" <?php if ($blog) {
+                    foreach ($blog['tag_id'] as $tid) {
+                      if ($tid === $t[0]) {
+                        echo 'checked';
+                      }
+                    }
+                  }?>>
                   <label class="form-check-label" for="<?php echo $t[0]; ?>"><?php echo $t[1]; ?></label>
                 </div>
               <?php endforeach; ?>
@@ -307,7 +310,9 @@ $img = db_first_get('img', $db);
   <script src="./js/marked.js"></script>
   <script src="./js/content_const.js"></script>
   <script src="./js/content_library.js"></script>
-  <script src="./js/content.js"></script>
   <?php if (!$blog) : ?>
-    <script src="./js/content_init.js"></script>
+    <!-- 新規作成のとき -->
+    <script src="./js/content_loading.js"></script>
   <?php endif; ?>
+  <script src="./js/content_autosave.js"></script>
+  <script src="./js/content.js"></script>

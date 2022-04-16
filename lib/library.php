@@ -223,3 +223,62 @@ function db_first_get($table_name, $db, $blog_id='') {
 
   return $results;
 }
+
+function db_update_blog($blog_id, $items, $db) {
+
+  $table_names = array_keys($items);
+ 
+  foreach ($table_names as $table_name) {
+    // 本文の更新
+    if ($table_name === 'blog') {
+      $query = "update blog set title = ?, body = ?, summary = ?, published = ? where id = $blog_id ";
+      $stmt = $db->prepare($query);
+      if (!$stmt) {
+        die($db->error);
+      }
+      $blog = $items[$table_name];
+      $stmt->bind_param('ssss', $blog['title'], $blog['body'], $blog['summary'], $blog['published']);
+    }
+    // カテゴリの更新
+    if ($table_name === 'blog_category') {
+      $query = "update $table_name set category_id = ? where blog_id = $blog_id ";
+      $stmt = $db->prepare($query);
+      if (!$stmt) {
+        die($db->error);
+      }
+      $blog = $items[$table_name];
+      $stmt->bind_param('i', $blog['category_id']); 
+    }
+    // サムネイルの更新
+    if ($table_name === 'blog_thumnail') {
+      $query = "update $table_name set img_id = ?, thumnail_seo = ? where blog_id = $blog_id ";
+      $stmt = $db->prepare($query);
+      if (!$stmt) {
+        die($db->error);
+      }
+      $blog = $items[$table_name];
+      $stmt->bind_param('is', $blog['img_id'], $blog['thumnail_seo']); 
+    }
+    // タグの更新
+    if ($table_name === 'blog_tag') {
+      var_dump($table_name);
+      var_dump($items[$table_name]);
+      exit();
+      // ブログidに紐づくタグを一度削除
+      // 改めて登録！
+      $tags = $items[$table_name];
+      foreach ($tags as $tag) {
+        $query = "update $table_name set tag_id = ? where blog_id = $blog_id ";
+        $stmt = $db->prepare($query);
+        if (!$stmt) {
+          die($db->error);
+        }
+        $stmt->bind_param('i', $tag['tag_id']); 
+      }
+    }
+    $success = $stmt->execute();
+    if (!$success) {
+      die($db->error);
+    }
+  }
+}
