@@ -23,9 +23,9 @@ if (isset($_SESSION['id']) && isset($_SESSION['name'])) {
 
   <div class="container-fluid">
     <div class="menu">
-      <button>
+      <button class="btn btn-dark">
         <a href="./list.php">
-          記事の作成
+          <img src="./assets/icon/pencil.svg" alt="">記事の作成
         </a>
       </button>
       <button>

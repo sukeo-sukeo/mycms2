@@ -38,8 +38,6 @@ if ($blog_id) {
   }
 }
 
-var_dump($_SESSION);
-
 $category = db_first_get('category', $db);
 $tag = db_first_get('tag', $db);
 $img = db_first_get('img', $db);

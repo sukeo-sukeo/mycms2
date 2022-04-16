@@ -73,9 +73,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         'blog' => $items, 
         'blog_category' => $items2, 
         'blog_thumnail' => $items3, 
-        'blog_tag' => $items4s
       ];
       db_update_blog($blog_id, $items, $db);
+      db_update_blog_tag($blog_id, $items4s, $db);
     } else {
       // insert(新規)
       db_insert_many($table_name2, $items2, $db);

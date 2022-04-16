@@ -100,7 +100,7 @@ const init = () => {
   const inputs = document.getElementsByTagName("input");
   const textAreas = document.getElementsByTagName("textarea");
   const selects = document.getElementsByTagName("select");
-  [...inputs].forEach((i) => i.addEventListener("blur", (e) => save()));
+  [...inputs].forEach((i) => i.id !== "uploadBtn" ? i.addEventListener("blur", (e) => save()) : "");
   [...textAreas].forEach((i) => i.addEventListener("blur", (e) => save()));
   [...selects].forEach((i) => i.addEventListener("change", (e) => save()));
 

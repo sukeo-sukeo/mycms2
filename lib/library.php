@@ -259,26 +259,44 @@ function db_update_blog($blog_id, $items, $db) {
       $blog = $items[$table_name];
       $stmt->bind_param('is', $blog['img_id'], $blog['thumnail_seo']); 
     }
-    // タグの更新
-    if ($table_name === 'blog_tag') {
-      var_dump($table_name);
-      var_dump($items[$table_name]);
-      exit();
-      // ブログidに紐づくタグを一度削除
-      // 改めて登録！
-      $tags = $items[$table_name];
-      foreach ($tags as $tag) {
-        $query = "update $table_name set tag_id = ? where blog_id = $blog_id ";
-        $stmt = $db->prepare($query);
-        if (!$stmt) {
-          die($db->error);
-        }
-        $stmt->bind_param('i', $tag['tag_id']); 
-      }
-    }
+  
     $success = $stmt->execute();
     if (!$success) {
       die($db->error);
     }
   }
+}
+
+function db_update_blog_tag($blog_id, $items, $db) {
+  $table_name = 'blog_tag';
+  $tag_ids = $items;//[blog_id, tag_id]
+
+  // まず削除
+  $query = "delete from $table_name where blog_id = ?";
+  $stmt = $db->prepare($query);
+  if (!$stmt) {
+    die($db->error);
+  }
+
+  $stmt->bind_param('i', $blog_id);
+  $success = $stmt->execute();
+  if (!$success) {
+    die($db->error);
+  }
+
+  // 改めてインサート
+  foreach ($tag_ids as $tag_id) {
+    $query = "insert into $table_name (blog_id, tag_id) values (?, ?)";
+    $stmt = $db->prepare($query);
+    if (!$stmt) {
+      die($db->error);
+    }
+
+    $stmt->bind_param('ii', $blog_id, $tag_id['tag_id']);
+    $success = $stmt->execute();
+    if (!$success) {
+      die($db->error);
+    }
+  }
+  
 }

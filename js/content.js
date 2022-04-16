@@ -15,7 +15,6 @@ uploadBtn.addEventListener("click", (e) => {
       localStorage.removeItem("mycms2-tags");
       localStorage.removeItem("mycms2-path");
       localStorage.removeItem("mycms2-isPreview");
-     
       // 万が一DBエラーが出た場合用のバックアップ
       // save();
     } else {
