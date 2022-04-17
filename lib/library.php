@@ -111,7 +111,7 @@ function db_update_one($table_name, $name, $id, $db) {
 }
 
 // 初期表示データの取得
-function db_first_get($table_name, $db, $blog_id='') {
+function db_first_get($table_name, $db, $blog_id='', $search_type='') {
   // 変数列挙->改善の余地あり
   $id = '';
   $name = '';
@@ -132,19 +132,55 @@ function db_first_get($table_name, $db, $blog_id='') {
   $tag_id = '';
 
   $results = [];
-
+  
   switch ($table_name) {
     case 'blog':
-      $query = "
-      select b.id, b.title, b.published, b.updated, i.id, i.path 
-      from 
-      $table_name b 
-      left join 
-      blog_thumnail t 
-      on b.id = t.blog_id
-      left join
-      img i
-      on t.img_id = i.id";
+      if ($search_type === '') {
+        // 全件取得
+        $query = "
+        select b.id, b.title, b.published, b.updated, i.id, i.path 
+        from 
+        $table_name b 
+        left join 
+        blog_thumnail t 
+        on b.id = t.blog_id
+        left join
+        img i
+        on t.img_id = i.id
+        order by b.updated desc";
+      } else {
+
+        // category絞り込み
+        if ($search_type === 'category') {
+          $col = '';
+          
+        }
+        // 公開｜非公開の取得
+        if ($search_type === 'published' || $search_type === 'un_published') {
+          
+          $col = 'published';
+          
+          if ($search_type === 'published') {
+            $cond = (string) 'true';
+          }
+          if ($search_type === 'un_published') {
+            $cond = (string) 'false';
+          }
+
+          $query = "
+          select b.id, b.title, b.published, b.updated, i.id, i.path 
+          from
+          $table_name b 
+          left join 
+          blog_thumnail t 
+          on b.id = t.blog_id
+          left join
+          img i
+          on t.img_id = i.id
+          where b.$col = '$cond'
+          order by b.updated desc";
+          }
+        }
     break;
     case 'img':
       $query = "select id, name, path, created from $table_name order by id desc";
@@ -169,7 +205,6 @@ function db_first_get($table_name, $db, $blog_id='') {
       $query = "select id, name from $table_name order by id desc";
     break;
   }
-
 
   $stmt = $db->prepare($query);
 

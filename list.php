@@ -12,17 +12,34 @@ if (isset($_SESSION['id']) && isset($_SESSION['name'])) {
 }
 
 $db = dbconnect();
-// 一覧を取得
-$blogs = db_first_get('blog', $db);
+
+// 表示の絞り込み
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+  if (isset($_POST['all'])) {
+    header('Location: ./list.php');
+    exit();
+  }
+  if (isset($_POST['un_published'])) {
+    $blogs = db_first_get('blog', $db, '', 'un_published');
+  }
+  if (isset($_POST['published'])) {
+    $blogs = db_first_get('blog', $db, '',  'published');
+  }
+  if (isset($_POST['category'])) {
+    $cate_id = filter_input(INPUT_POST, 'category', FILTER_SANITIZE_NUMBER_INT);
+    $blogs = db_first_get('blog', $db, $cate_id, 'category');
+  }
+} else {
+  // 一覧を取得
+  $blogs = db_first_get('blog', $db);
+}
+
 $categorys = db_first_get('category', $db);
 $tags = db_first_get('tag', $db);
-// array (size=6)
-//       0 => int 14
-//       1 => string 'jhogehoge' (length=9)
-//       2 => string 'false' (length=5)
-//       3 => string '2022-04-13 03:49:25' (length=19)
-//       4 => int 1
-//       5 => string './image/contents/20220410052020_エルデンリング壁紙.PNG' (length=69)
+
+// var_dump($blogs);
+// exit();
+// 
 ?>
 
 <!-- html -->
@@ -43,12 +60,18 @@ $tags = db_first_get('tag', $db);
       </button>
     </div>
     <div class="d-flex row mt-2">
-      <div class="col-4">
-        <button class="btn btn-secondary">全て</button>
-        <button class="btn btn-secondary">下書き</button>
-        <button class="btn btn-secondary">公開済</button>
+      <div class="col-4 d-flex">
+        <form action="" method="post" class="mb-0">
+          <button class="btn btn-secondary" name="all">全て</button>
+        </form>
+        <form action="" method="post" class="mx-1 mb-0">
+          <button class="btn btn-secondary" type="submit" name="un_published">非公開</button>
+        </form>
+        <form action="" method="post" class="mb-0">
+          <button class="btn btn-secondary" type="submit" name="published">公開中</button>
+        </form>
       </div>
-      <div class="input-group col">
+      <form action="" method="post" class="mb-0 input-group col">
         <span class="input-group-text">カテゴリ</span>
         <select class="form-select" name="category">
           <option value="" selected>カテゴリ検索</option>
@@ -56,8 +79,11 @@ $tags = db_first_get('tag', $db);
             <option value="<?php echo $c[0] ?>"><?php echo $c[1] ?></option>
           <?php endforeach; ?>
         </select>
-      </div>
+        <button class="btn btn-success" type="submit"><img src="./assets/icon/search.svg" alt=""></button>
+      </form>
+
       <div class="col-3"></div>
+    
     </div>
 
     <div class="container-fluid">
@@ -76,9 +102,9 @@ $tags = db_first_get('tag', $db);
             </a>
             <div class="col-3">
               <span class="text-muted">
-                <?php if ($b[2] === "true"): ?>
+                <?php if ($b[2] === "true") : ?>
                   <img src="./assets/icon/bookmark-check.svg" alt="">
-                <?php else: ?>
+                <?php else : ?>
                   <img src="./assets/icon/bookmark-check-current.svg" alt="">
                 <?php endif; ?>
                 <?php echo explode(" ", $b[3])[0]; ?>
