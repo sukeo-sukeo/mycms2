@@ -35,7 +35,7 @@ $tags = db_first_get('tag', $db);
 
   <div class="container-fluid">
 
-    <div class="row">
+    <div class="row ms-1">
       <button class="btn btn-primary mt-2" style="width: fit-content;">
         <a href="content.php">
           新規作成
