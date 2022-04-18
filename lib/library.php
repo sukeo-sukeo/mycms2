@@ -111,7 +111,7 @@ function db_update_one($table_name, $name, $id, $db) {
 }
 
 // 初期表示データの取得
-function db_first_get($table_name, $db, $blog_id='', $search_type='') {
+function db_first_get($table_name, $db, $blog_id='', $search_type='', $search_type2='') {
   // 変数列挙->改善の余地あり
   $id = '';
   $name = '';
@@ -152,13 +152,34 @@ function db_first_get($table_name, $db, $blog_id='', $search_type='') {
 
         // category絞り込み
         if ($search_type === 'category') {
-          $col = '';
-          
+          $cate_id = $blog_id;
+          $cond = '';
+          if ($search_type2 === 'pub') {
+            $cond = (string) 'true';   
+          }
+          if ($search_type2 === 'un_pub') {
+            $cond = (string) 'false';   
+          }
+          $query = "
+          select b.id, b.title, b.published, b.updated, i.id, i.path 
+          from
+          blog_category bc
+          left join
+          $table_name b
+          on bc.blog_id = b.id
+          left join 
+          blog_thumnail t 
+          on b.id = t.blog_id
+          left join
+          img i
+          on t.img_id = i.id
+          where bc.category_id = $cate_id";
+          $query2 = " and b.published = '$cond'";
+          $query3 = " order by b.updated desc";
+          $query .= $cond ? $query2.$query3 : $query3;
         }
         // 公開｜非公開の取得
         if ($search_type === 'published' || $search_type === 'un_published') {
-          
-          $col = 'published';
           
           if ($search_type === 'published') {
             $cond = (string) 'true';
@@ -177,7 +198,7 @@ function db_first_get($table_name, $db, $blog_id='', $search_type='') {
           left join
           img i
           on t.img_id = i.id
-          where b.$col = '$cond'
+          where b.published = '$cond'
           order by b.updated desc";
           }
         }

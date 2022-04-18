@@ -13,29 +13,55 @@ if (isset($_SESSION['id']) && isset($_SESSION['name'])) {
 
 $db = dbconnect();
 
-// 表示の絞り込み
+// 絞り込み
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   if (isset($_POST['all'])) {
+    $_SESSION['search']['pub'] = 'all';
+    unset($_SESSION['search']['cate_id']);
     header('Location: ./list.php');
     exit();
   }
   if (isset($_POST['un_published'])) {
     $blogs = db_first_get('blog', $db, '', 'un_published');
+    $_SESSION['search']['pub'] = 'un_pub';
+    unset($_SESSION['search']['cate_id']);
   }
   if (isset($_POST['published'])) {
     $blogs = db_first_get('blog', $db, '',  'published');
+    $_SESSION['search']['pub'] = 'pub';
+    unset($_SESSION['search']['cate_id']);
   }
   if (isset($_POST['category'])) {
+    $pub = $_SESSION['search']['pub'];
     $cate_id = filter_input(INPUT_POST, 'category', FILTER_SANITIZE_NUMBER_INT);
-    $blogs = db_first_get('blog', $db, $cate_id, 'category');
+    if ($cate_id !== '') {
+      $blogs = db_first_get('blog', $db, $cate_id, 'category', $pub);
+      $_SESSION['search']['cate_id'] = $cate_id;
+    } else {
+      $blogs = db_first_get('blog', $db);
+    }
   }
 } else {
   // 一覧を取得
   $blogs = db_first_get('blog', $db);
+  unset($_SESSION['search']);
 }
 
 $categorys = db_first_get('category', $db);
 $tags = db_first_get('tag', $db);
+
+
+// 絞り込みをしたメニューパネルのhtml表示分岐
+$cate = '';
+if (isset($_SESSION['search']['cate_id'])) {
+  $cate = (int) $_SESSION['search']['cate_id'];
+}
+$pub = 'all';
+if (isset($_SESSION['search']['pub'])) {
+  $pub = $_SESSION['search']['pub'];
+}
+
+
 
 // var_dump($blogs);
 // exit();
@@ -62,13 +88,13 @@ $tags = db_first_get('tag', $db);
     <div class="d-flex row mt-2">
       <div class="col-4 d-flex">
         <form action="" method="post" class="mb-0">
-          <button class="btn btn-secondary" name="all">全て</button>
+          <button class="btn btn-secondary border <?php echo $pub === 'all' ? 'border-3 border-dark' : '' ?>" name="all">全て</button>
         </form>
         <form action="" method="post" class="mx-1 mb-0">
-          <button class="btn btn-secondary" type="submit" name="un_published">非公開</button>
+          <button class="btn btn-secondary border <?php echo $pub === 'un_pub' ? 'border-3 border-dark' : '' ?>" type="submit" name="un_published">非公開</button>
         </form>
         <form action="" method="post" class="mb-0">
-          <button class="btn btn-secondary" type="submit" name="published">公開中</button>
+          <button class="btn btn-secondary border <?php echo $pub === 'pub' ? 'border-3 border-dark' : '' ?>" type="submit" name="published">公開中</button>
         </form>
       </div>
       <form action="" method="post" class="mb-0 input-group col">
@@ -76,14 +102,18 @@ $tags = db_first_get('tag', $db);
         <select class="form-select" name="category">
           <option value="" selected>カテゴリ検索</option>
           <?php foreach ($categorys as $c) : ?>
-            <option value="<?php echo $c[0] ?>"><?php echo $c[1] ?></option>
+            <option value="<?php echo $c[0] ?>" <?php if ($cate) {
+                                                  if ($cate === $c[0]) {
+                                                    echo 'selected';
+                                                  }
+                                                } ?>><?php echo $c[1] ?></option>
           <?php endforeach; ?>
         </select>
         <button class="btn btn-success" type="submit"><img src="./assets/icon/search.svg" alt=""></button>
       </form>
 
       <div class="col-3"></div>
-    
+
     </div>
 
     <div class="container-fluid">
