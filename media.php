@@ -28,6 +28,13 @@ $img = db_first_get('img', $db);
   <?php require_once(__DIR__ . "/shared/header.php"); ?>
 
   <div class="container-fluid">
+    <h2 class="mt-3">画像の管理</h2>
+    <p>
+      <?php if (isset($_SESSION['change-msg'])) {
+        echo $_SESSION['change-msg'];
+        unset($_SESSION['change-msg']);
+      } ?>
+    </p>
     <ul class="list-group list-group-flush">
       <?php foreach ($img as $i) : ?>
 

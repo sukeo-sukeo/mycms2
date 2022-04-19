@@ -54,7 +54,7 @@ if (isset($_SESSION['id']) && isset($_SESSION['name'])) {
         </div>
         <div class="col-6 d-flex mt-3 justify-content-end">
           <button class="btn btn-dark w-75">
-            <a href="./media.php" class="d-flex flex-column align-items-center">
+            <a href="./category.php" class="d-flex flex-column align-items-center">
               <img src="./assets/icon/braces-asterisk.svg" alt="">
               <span>カテゴリの管理</span>
             </a>
@@ -62,7 +62,7 @@ if (isset($_SESSION['id']) && isset($_SESSION['name'])) {
         </div>
         <div class="col-6 d-flex mt-3 justify-content-start">
           <button class="btn btn-dark w-75">
-            <a href="./media.php" class="d-flex flex-column align-items-center">
+            <a href="./tag.php" class="d-flex flex-column align-items-center">
               <img src="./assets/icon/tag.svg" alt="">
               <span>タグの管理</span>
             </a>

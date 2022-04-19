@@ -36,7 +36,7 @@
       </div>
       <div class="d-flex justify-content-end">
         <button class="btn btn-dark">
-          <a href="./media.php" class="d-flex flex-column align-items-center">
+          <a href="./category.php" class="d-flex flex-column align-items-center">
             <img src="./assets/icon/braces-asterisk.svg" alt="" width="25">
             <small>カテゴリの管理</small>
           </a>
@@ -44,7 +44,7 @@
       </div>
       <div class="d-flex justify-content-start">
         <button class="btn btn-dark">
-          <a href="./media.php" class="d-flex flex-column align-items-center">
+          <a href="./tag.php" class="d-flex flex-column align-items-center">
             <img src="./assets/icon/tag.svg" alt="" width="25">
             <small>タグの管理</small>
           </a>

@@ -9,10 +9,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $img_id = (int) filter_input(INPUT_POST, 'trash', FILTER_SANITIZE_STRING);
   
     $db = dbconnect();
+
+    $cnt = db_exist_check('blog_thumnail', $img_id, 'img_id', $db);
+    $cnt2 = db_exist_check('blog_img', $img_id, 'img_id', $db);
     
-    db_delete_one('img', $img_id, $db);
-    header('Location: ../media.php');
-    exit();
+    if (!$cnt && !$cnt2) {
+      db_delete_one('img', $img_id, $db);
+      header('Location: ../media.php');
+      exit();
+    } else {
+      $msg = '使用中の画像は削除できません';
+      $_SESSION['change-msg'] = $msg;
+      header('Location: ../media.php');
+      exit();
+    }
   }
 
   if (isset($_REQUEST['change_name'])) {

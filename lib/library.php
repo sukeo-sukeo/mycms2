@@ -84,6 +84,23 @@ function db_find_one($table_name, $item, $db) {
   return $name;
 }
 
+function db_exist_check($table_name, $id, $col, $db) {
+  $cnt = 0;
+  $stmt = $db->prepare("select count(*) from $table_name where $col=?");
+  if (!$stmt) {
+    die($db->error);
+  }
+  $stmt->bind_param('i', $id);
+  $success = $stmt->execute();
+  if (!$success) {
+    die($db->error);
+  }
+
+  $stmt->bind_result($cnt);
+  $stmt->fetch();
+  return $cnt;
+}
+
 function db_delete_one($table_name, $id, $db) {
   $stmt = $db->prepare("delete from $table_name where id=? limit 1");
   if (!$stmt) {
