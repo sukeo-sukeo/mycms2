@@ -4,6 +4,8 @@ require_once(__DIR__ . '/../lib/library.php');
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
+  $referer = basename($_SERVER['HTTP_REFERER']);
+  
   $db = dbconnect();
   
   // カテゴリ、タグの登録
@@ -14,7 +16,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // 空白の場合
     if ($add_item === '') {
       $_SESSION['add_item_msg'] = '空白です';
-      header('Location: ../content.php');
+      header("Location: ../$referer");
       exit();
     }
 
@@ -31,7 +33,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $_SESSION['add_item_msg'] .= $add_item . '<span class="badge bg-secondary">Already</span> ';
       }
     };
-    header('Location: ../content.php');
+    header("Location: ../$referer");
     exit(); 
   }
 
@@ -42,7 +44,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // 空白の場合
     if ($img['name'] === '') {
       $_SESSION['add_item_msg'] = 'ファイルが選択されていません';
-      header('Location: ../content.php');
+      header("Location: ../$referer");
       exit();
     }
 
@@ -50,7 +52,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $type = mime_content_type($img['tmp_name']);
     if ($type !== 'image/png' && $type !== 'image/jpeg') {
       $_SESSION['add_item_msg'] = '.png か .jpg を選択してください';
-      header('Location: ../content.php');
+      header("Location: ../$referer");
       exit();
     }
 
@@ -73,7 +75,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     
 
     $_SESSION['add_item_msg'] = $img['name'] . ' をアップロードしました';
-    header('Location: ../content.php');
+    header("Location: ../$referer");
     exit();
   }
 

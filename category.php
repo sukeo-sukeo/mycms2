@@ -26,14 +26,14 @@ $category = db_first_get('category', $db);
 <body>
 
   <?php require_once(__DIR__ . "/shared/header.php"); ?>
-  
+
   <div class="container-fluid">
     <h2 class="mt-3">カテゴリの管理</h2>
-    <p>
+    <p style="height: 24px;">
       <?php if (isset($_SESSION['change-msg'])) {
-      echo $_SESSION['change-msg'];
-      unset($_SESSION['change-msg']);
-    } ?>
+        echo $_SESSION['change-msg'];
+        unset($_SESSION['change-msg']);
+      } ?>
     </p>
     <ul class="list-group list-group-flush">
       <?php foreach ($category as $c) : ?>

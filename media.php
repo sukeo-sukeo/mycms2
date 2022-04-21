@@ -11,6 +11,12 @@ if (isset($_SESSION['id']) && isset($_SESSION['name'])) {
   exit();
 }
 
+if (isset($_SESSION['add_item_msg'])) {
+  $_SESSION['change-msg'] =
+    $_SESSION['add_item_msg'];
+  unset($_SESSION['add_item_msg']);
+}
+
 // dbからアイテム読み込み
 $db = dbconnect();
 $img = db_first_get('img', $db);
@@ -28,13 +34,28 @@ $img = db_first_get('img', $db);
   <?php require_once(__DIR__ . "/shared/header.php"); ?>
 
   <div class="container-fluid">
-    <h2 class="mt-3">画像の管理</h2>
-    <p>
+    <!-- アップロード機構 -->
+    <div class="row mt-3 d-flex">
+      <span class="h3 col-3">画像の管理</span>
+      <form action="./scripts/item_add_check.php" method="POST" class="col d-flex" enctype="multipart/form-data">
+        <div class="col">
+          <span class="form-label"></span>
+          <input class="form-control" type="file" name="img">
+        </div>
+        <div class="col ms-2">
+          <input type="submit" value="画像をアップロード" class="btn btn-secondary" id="addBtnImg">
+        </div>
+      </form>
+    </div>
+
+    <!-- アナウンス -->
+    <p style="height: 24px;">
       <?php if (isset($_SESSION['change-msg'])) {
         echo $_SESSION['change-msg'];
         unset($_SESSION['change-msg']);
       } ?>
     </p>
+
     <ul class="list-group list-group-flush">
       <?php foreach ($img as $i) : ?>
 
