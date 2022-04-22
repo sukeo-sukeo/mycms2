@@ -11,6 +11,12 @@ if (isset($_SESSION['id']) && isset($_SESSION['name'])) {
   exit();
 }
 
+if (isset($_SESSION['add_item_msg'])) {
+  $_SESSION['change-msg'] =
+    $_SESSION['add_item_msg'];
+  unset($_SESSION['add_item_msg']);
+}
+
 // dbからアイテム読み込み
 $db = dbconnect();
 $tag = db_first_get('tag', $db);
@@ -28,38 +34,52 @@ $tag = db_first_get('tag', $db);
   <?php require_once(__DIR__ . "/shared/header.php"); ?>
 
   <div class="container-fluid">
-    <h2 class="mt-3">タグの管理</h2>
-    <p style="height: 24px;">
-      <?php if (isset($_SESSION['change-msg'])) {
-        echo $_SESSION['change-msg'];
-        unset($_SESSION['change-msg']);
-      } ?>
-    </p>
-    <ul class="list-group list-group-flush">
-      <?php foreach ($tag as $t) : ?>
+    <!-- アップロード機構 -->
+    <div class="row mt-3 d-flex">
+      <span class="h3 col-3">タグの管理</span>
+      <form action="./scripts/item_add_check.php" method="POST" class="col d-flex">
+        <div class="input-group col">
+          <span class="input-group-text">タグ</span>
+          <input class="form-control" type="text" name="tag" placeholder="複数登録はカンマ区切りで入力" id="val">
+        </div>
+        <div class="col ms-2">
+          <input type="submit" value="タグを追加" class="btn btn-secondary" id="addBtn">
+        </div>
+      </form>
+    </div>
 
-        <li class="list-group-item row d-flex align-items-center" id="<?php echo $t[0] ?>">
-          <div class="col-10 col-md-6">
-            <form action="./scripts/tag_change_check.php" method="post" class="mb-0">
-              <input type="text" style="width: 60%;" value="<?php echo $t[1] ?>" name="change_name">
-              <button type="submit" class="btn btn-success btn-sm">
-                done
-              </button>
-              <input type="hidden" name="change_id" value="<?php echo $t[0] ?>">
-            </form>
-          </div>
-          <div class="col-1 trashBtn">
-            <form action="./scripts/tag_change_check.php" method="post" class="mb-0">
-              <button type="submit">
-                <img src="./assets/icon/trash.svg" alt="">
-              </button>
-              <input type="hidden" name="trash" value="<?php echo $t[0] ?>">
-            </form>
-          </div>
-        </li>
-      <?php endforeach; ?>
-    </ul>
-  </div>
-  <?php require_once(__DIR__ . "/shared/footer.php"); ?>
-  <!-- script -->
-  <script src="./js/media.js"></script>
+      <!-- アナウンス -->
+      <p style="height: 24px;">
+        <?php if (isset($_SESSION['change-msg'])) {
+          echo $_SESSION['change-msg'];
+          unset($_SESSION['change-msg']);
+        } ?>
+      </p>
+      <ul class="list-group list-group-flush">
+        <?php foreach ($tag as $t) : ?>
+
+          <li class="list-group-item row d-flex align-items-center" id="<?php echo $t[0] ?>">
+            <div class="col-10 col-md-6">
+              <form action="./scripts/tag_change_check.php" method="post" class="mb-0">
+                <input type="text" style="width: 60%;" value="<?php echo $t[1] ?>" name="change_name">
+                <button type="submit" class="btn btn-success btn-sm">
+                  done
+                </button>
+                <input type="hidden" name="change_id" value="<?php echo $t[0] ?>">
+              </form>
+            </div>
+            <div class="col-1 trashBtn">
+              <form action="./scripts/tag_change_check.php" method="post" class="mb-0">
+                <button type="submit">
+                  <img src="./assets/icon/trash.svg" alt="">
+                </button>
+                <input type="hidden" name="trash" value="<?php echo $t[0] ?>">
+              </form>
+            </div>
+          </li>
+        <?php endforeach; ?>
+      </ul>
+    </div>
+    <?php require_once(__DIR__ . "/shared/footer.php"); ?>
+    <!-- script -->
+    <script src="./js/media.js"></script>

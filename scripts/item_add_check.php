@@ -7,7 +7,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   $referer = basename($_SERVER['HTTP_REFERER']);
   
   $db = dbconnect();
-  
+ 
   // カテゴリ、タグの登録
   if (isset($_REQUEST['category']) || isset($_REQUEST['tag'])) {
     $table_name = array_key_first($_REQUEST);

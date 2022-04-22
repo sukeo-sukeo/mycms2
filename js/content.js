@@ -10,13 +10,8 @@ uploadBtn.addEventListener("click", (e) => {
     return;
   } else {
     if (confirm("アップロードしますか？")) {
-      // 自動保存データをクリア
-      localStorage.removeItem("mycms2");
-      localStorage.removeItem("mycms2-tags");
-      localStorage.removeItem("mycms2-path");
-      localStorage.removeItem("mycms2-isPreview");
-      // 万が一DBエラーが出た場合用のバックアップ
-      // save();
+      // ローカルストレージの自動保存データをクリア
+      reset();
     } else {
       e.preventDefault();
     }
@@ -98,3 +93,10 @@ ctl_img_select.addEventListener("change", e => {
   insertBody(`![${name}](${path})`);
   toPreview();
 });
+
+clearBtn.addEventListener("click", e => {
+  if (confirm("変更内容を消去します")) {
+    reset();
+    location.reload();
+  }
+})

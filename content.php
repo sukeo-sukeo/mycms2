@@ -111,10 +111,18 @@ $img = db_first_get('img', $db);
     <form action="./scripts/blog_post_check.php" method="POST" class="mt-3 container-fluid">
   
       <!-- トップ -->
-      <div class="row d-flex mt-5">
+      <div class="row d-flex align-items-center mt-5">
+        <!-- title -->
         <div class="col-6">
           <input class="form-control blog-data" type="text" placeholder="Title" name="title" value="<?php echo $blog ? $blog['title'] : '' ?>">
         </div>
+
+        <!-- クリアボタン -->
+        <div class="col">
+          <span class="btn btn-warning btn-sm text-muted" id="clearBtn">クリア</span>
+        </div>
+
+        <!-- published? -->
         <div class="col d-flex justify-content-end align-items-center">
           <div class="form-check form-switch me-3 d-flex align-items-center">
             <input class="form-check-input mt-0 blog-data" style="width:50px; height:25px; cursor: pointer;" type="checkbox" id="publishedBtn" checked name="published" value="<?php echo $blog ? $blog['published'] : 'true' ?>">

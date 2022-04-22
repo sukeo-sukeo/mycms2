@@ -40,10 +40,11 @@ $img = db_first_get('img', $db);
       <form action="./scripts/item_add_check.php" method="POST" class="col d-flex" enctype="multipart/form-data">
         <div class="col">
           <span class="form-label"></span>
-          <input class="form-control" type="file" name="img">
+          <input class="form-control" type="file" name="img" id="val">
         </div>
         <div class="col ms-2">
-          <input type="submit" value="画像をアップロード" class="btn btn-secondary" id="addBtnImg">
+          <span></span>
+          <input type="submit" value="画像をアップロード" class="btn btn-secondary" id="addBtn">
         </div>
       </form>
     </div>

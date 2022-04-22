@@ -69,6 +69,13 @@ const save = (e) => {
   localStorage.setItem("mycms2-isPreview", JSON.stringify(isPreview));
 };
 
+const reset = () => {
+  localStorage.removeItem("mycms2");
+  localStorage.removeItem("mycms2-tags");
+  localStorage.removeItem("mycms2-path");
+  localStorage.removeItem("mycms2-isPreview");
+} 
+
 const displayTag = () => {
   const tags = document.getElementsByClassName("tag");
   const vals = [...tags]

@@ -11,6 +11,12 @@ if (isset($_SESSION['id']) && isset($_SESSION['name'])) {
   exit();
 }
 
+if (isset($_SESSION['add_item_msg'])) {
+  $_SESSION['change-msg'] =
+    $_SESSION['add_item_msg'];
+  unset($_SESSION['add_item_msg']);
+}
+
 // dbからアイテム読み込み
 $db = dbconnect();
 $category = db_first_get('category', $db);
@@ -28,7 +34,21 @@ $category = db_first_get('category', $db);
   <?php require_once(__DIR__ . "/shared/header.php"); ?>
 
   <div class="container-fluid">
-    <h2 class="mt-3">カテゴリの管理</h2>
+    <!-- アップロード機構 -->
+    <div class="row mt-3 d-flex">
+      <span class="h3 col-3">カテゴリの管理</span>
+      <form action="./scripts/item_add_check.php" method="POST" class="col d-flex">
+        <div class="input-group col">
+          <span class="input-group-text">カテゴリ</span>
+          <input class="form-control" type="text" name="category" placeholder="複数登録はカンマ区切りで入力" id="val">
+        </div>
+        <div class="col ms-2">
+          <input type="submit" value="カテゴリを追加" class="btn btn-secondary" id="addBtn">
+        </div>
+      </form>
+    </div>
+
+    <!-- アナウンス -->
     <p style="height: 24px;">
       <?php if (isset($_SESSION['change-msg'])) {
         echo $_SESSION['change-msg'];

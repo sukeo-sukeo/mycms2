@@ -2,6 +2,7 @@
 
 const copyPaths = document.getElementsByClassName("copyPath");
 const trashBtns = document.getElementsByClassName("trashBtn");
+const addBtn = document.getElementById("addBtn");
 
 [...copyPaths].forEach((c) => {
   c.addEventListener("click", (e) => {
@@ -44,3 +45,23 @@ const toast = (parent, msg) => {
     clearInterval(sid);
   }, 2000);
 }
+
+addBtn.addEventListener("click", e => {
+  const elm = document.getElementById("val");
+  const name = elm.name;
+  let val = elm.value;
+  console.log(name);
+  // 空白の場合の処理はPHPに書いてある
+  if (name === 'img' && val !== "") {
+    if (val.includes("fakepath")) {
+      // fakepathを除去
+      val = val.split("\\fakepath\\")[1];
+    }
+  
+    if (val.split(".").length !== 2) {
+      alert("ファイル名が不正です");
+      e.preventDefault();
+      return;
+    }
+  }
+});

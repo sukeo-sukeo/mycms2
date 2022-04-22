@@ -24,3 +24,4 @@ let isPreview = false;
 const ctl_table = document.getElementById("ctl_table");
 const ctl_img = document.getElementById("ctl_img");
 const ctl_img_select = document.getElementById("ctl_img_select");
+const clearBtn = document.getElementById("clearBtn");
