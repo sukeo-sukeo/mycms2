@@ -7,9 +7,9 @@ function h($value)
 
 function dbconnect() {
   // local
-  require(__DIR__ . '/../config/database/info_dev.php');
+  // require(__DIR__ . '/../config/database/info_dev.php');
   // vartualbox
-  // require(__DIR__ . '/../config/database/info_test.php');
+  require(__DIR__ . '/../config/database/info_test.php');
   // 本番
   // require(__DIR__ . '/../config/database/info_pro.php');
   $dbinfo = get_dbinfo();
