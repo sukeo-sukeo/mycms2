@@ -243,8 +243,8 @@ $img = db_first_get('img', $db);
           <div class="col">
             <dl>
               <dt>サムネイル</dt>
-              <dd>
-                <img src="./image/sample.png" alt="" class="img-thumbnail" style="max-height: 350px;" id="thumnail">
+              <dd class="text-center">
+                <img src="./image/sample.png" alt="" class="img-thumbnail border-0" style="max-height: 350px;" id="thumnail">
               </dd>
 
               <dd>

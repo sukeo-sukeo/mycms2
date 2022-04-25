@@ -6,7 +6,6 @@ if (isset($_SESSION['id']) && isset($_SESSION['name'])) {
   exit();
 }
 
-var_dump($_SESSION);
 ?>
 
 <!DOCTYPE html>

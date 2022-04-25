@@ -62,7 +62,7 @@ $img = db_first_get('img', $db);
 
         <li class="list-group-item row d-flex align-items-center" id="<?php echo $i[0] ?>">
           <div class="col">
-            <img src="<?php echo $i[2] ?>" class="img-thumbnail">
+            <img src="<?php echo $i[2] ?>" class="img-thumbnail border-0">
           </div>
           <div class="col-4">
             <form action="./scripts/media_change_check.php" method="post" class="mb-0">
